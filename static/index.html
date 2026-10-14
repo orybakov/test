@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#090f1d">
+  <title>Voice Sentinel — AI Notification Control</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="ambient ambient-1"></div><div class="ambient ambient-2"></div>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="logo" href="/" aria-label="Voice Sentinel home"><span class="logo-icon">◈</span><span>VOICE <b>SENTINEL</b><small>PERSONAL SIGNAL INTELLIGENCE</small></span></a>
+      <div class="nav-item selected"><span>◉</span> Обзор системы</div>
+      <div class="nav-item"><span>≡</span> Поток событий</div>
+      <div class="section-name">ИНФРАСТРУКТУРА</div>
+      <div class="source"><span class="source-mark purple">⬡</span> Whop Pipeline <span class="dot"></span></div>
+      <div class="source"><span class="source-mark green">⌘</span> Codex Agents <span class="dot"></span></div>
+      <div class="source"><span class="source-mark blue">↗</span> Trading Agents <span class="dot"></span></div>
+      <div class="source"><span class="source-mark amber">▣</span> Homelab <span class="dot"></span></div>
+      <div class="sidebar-bottom"><div class="online"><span class="pulse"></span> Локальная система</div><span class="version">v0.1.0 · SELF HOSTED</span></div>
+    </aside>
+    <main class="main">
+      <header class="topbar"><div class="breadcrumb">СИСТЕМА <span>/</span> ОБЗОР</div><div class="clock" id="clock"></div></header>
+      <div class="content">
+        <section class="heading">
+          <div><div class="eyebrow">✦ ТВОЙ ЦЕНТР УВЕДОМЛЕНИЙ</div><h1>Только важное.<br><em>В правильный момент.</em></h1><p class="subtitle">Твои агенты работают. Sentinel следит за событиями, отсеивает шум и озвучивает главное.</p></div>
+          <div class="orb-card" aria-hidden="true"><div class="orb"><div class="orb-core"></div><div class="orb-ring orb-ring-a"></div><div class="orb-ring orb-ring-b"></div></div><span>MONITORING ACTIVE</span></div>
+        </section>
+        <section class="connect" id="connect" aria-label="Подключение">
+          <div><strong>Подключи панель</strong><p>Введи API-ключ, который напечатала команда <code>./start.sh</code>. Он останется только в текущей вкладке.</p></div>
+          <form id="auth-form" class="auth-form"><input id="key" type="password" autocomplete="off" spellcheck="false" placeholder="API-ключ" aria-label="API-ключ" required><button type="submit" class="btn primary">Подключить →</button></form>
+        </section>
+        <section id="app-content" class="hidden">
+          <div class="stats">
+            <article class="stat"><div class="stat-label">ВСЕГО СОБЫТИЙ <span>↗</span></div><div class="stat-value" id="count-total">0</div><div class="stat-note">С момента запуска</div></article>
+            <article class="stat"><div class="stat-label">ТРЕБУЮТ ВНИМАНИЯ <span class="pink">◆</span></div><div class="stat-value" id="count-attention">0</div><div class="stat-note">Критические и важные</div></article>
+            <article class="stat"><div class="stat-label">ГОТОВО К ОЗВУЧКЕ <span class="mint">◈</span></div><div class="stat-value" id="count-ready">0</div><div class="stat-note">История уведомлений</div></article>
+          </div>
+          <div class="control-grid">
+            <section class="panel control-panel"><div class="panel-heading"><div><div class="eyebrow">КАНАЛЫ ДОСТАВКИ</div><h2>Управление звуком</h2></div><span class="tag" id="tts-badge">BROWSER TTS</span></div>
+              <div class="toggle-line"><span class="control-icon">◖))</span><div class="grow"><b>Озвучивать на этом устройстве</b><p>Работает, пока вкладка открыта</p></div><button class="switch" id="sound-toggle" type="button" role="switch" aria-checked="false" aria-label="Включить локальную озвучку"><span></span></button></div>
+              <div class="status-line"><div class="status-label">Telegram</div><span id="telegram-status" class="status-chip">НЕ НАСТРОЕН</span></div>
+              <div class="status-line"><div class="status-label">AI-классификатор</div><span id="llm-status" class="status-chip">ПРАВИЛА</span></div>
+              <div class="actions"><button id="demo" class="btn primary">◉ Проверить уведомление</button><button id="digest" class="btn ghost">Создать дайджест</button></div>
+              <p class="help">Голос в браузере запускается только после нажатия переключателя. Для голосовых Telegram включи Qwen в Docker.</p>
+            </section>
+            <section class="panel levels-panel"><div class="eyebrow">ФИЛЬТР СИГНАЛОВ</div><h2>Не всё заслуживает внимания</h2>
+              <div class="level-item"><span class="level-indicator critical"></span><div><b>Критическое</b><p>Опасные ошибки, недоступность сервисов</p></div><span>СРАЗУ</span></div>
+              <div class="level-item"><span class="level-indicator important"></span><div><b>Важное</b><p>Завершение работы, решение человека</p></div><span>СРАЗУ</span></div>
+              <div class="level-item"><span class="level-indicator normal"></span><div><b>Обычное</b><p>Накопление в сводку</p></div><span>ДАЙДЖЕСТ</span></div>
+              <div class="level-item"><span class="level-indicator silent"></span><div><b>Шум</b><p>Без звука и отвлечений</p></div><span>ТИХО</span></div>
+            </section>
+          </div>
+          <section class="panel events-panel"><div class="panel-heading"><div><div class="eyebrow">LIVE EVENT STREAM</div><h2>Последние события</h2></div><span class="live"><span class="pulse"></span> ОБНОВЛЯЕТСЯ</span></div>
+            <div id="events" class="event-list"><div class="empty">Пока нет событий. Нажми «Проверить уведомление», чтобы начать.</div></div>
+          </section>
+        </section>
+        <div id="toast" aria-live="polite"></div>
+        <footer>VOICE SENTINEL <span>© PERSONAL AI OPERATIONS</span> <button type="button" id="disconnect" class="link-button hidden">Отключить панель</button></footer>
+      </div>
+    </main>
+  </div>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>

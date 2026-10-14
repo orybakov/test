@@ -1,0 +1,46 @@
+services:
+  sentinel:
+    build: .
+    container_name: voice-sentinel
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8099:8099"
+    environment:
+      SENTINEL_API_KEY: ${SENTINEL_API_KEY:?Run ./start.sh}
+      DB_PATH: /data/sentinel.sqlite3
+      AUDIO_DIR: /data/audio
+      TTS_PROVIDER: ${TTS_PROVIDER:-browser}
+      TTS_URL: http://tts:7801/synthesize
+      TTS_VOICE: ${TTS_VOICE:-Ryan}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID:-}
+      LLM_BASE_URL: ${LLM_BASE_URL:-}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_MODEL: ${LLM_MODEL:-}
+      DIGEST_INTERVAL_SECONDS: ${DIGEST_INTERVAL_SECONDS:-3600}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - sentinel-data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8099/health',timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+  tts:
+    profiles: ["qwen"]
+    build: ./tts
+    container_name: voice-sentinel-tts
+    restart: unless-stopped
+    gpus: all
+    environment:
+      QWEN_MODEL: ${QWEN_MODEL:-Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice}
+      HF_HOME: /hf-cache
+      HF_HUB_DISABLE_TELEMETRY: "1"
+    volumes:
+      - qwen-cache:/hf-cache
+    # Inference stays private inside the Compose network.
+
+volumes:
+  sentinel-data:
+  qwen-cache:
